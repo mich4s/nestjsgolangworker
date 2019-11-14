@@ -15,11 +15,6 @@ func NewService(options *redis.Options) *Service {
 	}
 }
 
-type Service struct {
-	client       *redis.Client
-	subscription map[string]Handler
-}
-
 func (s *Service) addListener(command string, handler Handler) {
 	channel := createChannel(command)
 	_, ok := s.subscription[command]
@@ -29,7 +24,7 @@ func (s *Service) addListener(command string, handler Handler) {
 	}
 }
 
-func (s *Service) subscribe(channel *Channel, handler Handler) {
+func (s *Service) subscribe(channel *channel, handler Handler) {
 	pubsub := s.client.Subscribe(channel.income)
 
 	ch := pubsub.Channel()
@@ -38,10 +33,12 @@ func (s *Service) subscribe(channel *Channel, handler Handler) {
 	}
 }
 
-func (s *Service) handleMessage(msg *redis.Message, channel *Channel, handler Handler) {
-	message := &Message{}
+func (s *Service) handleMessage(msg *redis.Message, channel *channel, handler Handler) {
+	message := &message{}
 	err := json.Unmarshal([]byte(msg.Payload), message)
-	fmt.Println(err)
+	if err != nil {
+		fmt.Println(err)
+	}
 	context := Context{
 		message: message,
 		id:      message.Id,
@@ -53,16 +50,6 @@ func (s *Service) handleMessage(msg *redis.Message, channel *Channel, handler Ha
 		},
 	}
 	handler(&context)
-}
-
-func (s *Service) removeListener(command string) {
-	//_, ok := s.subscription[command]
-	//if ok {
-	//	s.subscription[command]--
-	//	if s.subscription[command] == 0 {
-	//
-	//	}
-	//}
 }
 
 func (s *Service) MessageHandler(command string, handler Handler) {

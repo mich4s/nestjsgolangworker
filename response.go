@@ -5,18 +5,18 @@ import (
 	"fmt"
 )
 
-func (ctx *Context) Send(response interface{}) {
-	ctx.send(&Response{
+func (ctx *Context) Send(responseData interface{}) {
+	ctx.send(&response{
 		Err:        nil,
 		Id:         ctx.id,
 		IsDisposed: true,
-		Response:   response,
+		Response:   responseData,
 	})
 }
 
 func (ctx *Context) SendError(message string) {
-	ctx.send(&Response{
-		Err: &ResponseError{
+	ctx.send(&response{
+		Err: &responseError{
 			Message: message,
 			Status:  "error",
 		},
@@ -26,9 +26,8 @@ func (ctx *Context) SendError(message string) {
 	})
 }
 
-func (ctx *Context) send(response *Response) {
+func (ctx *Context) send(response *response) {
 	result, err := json.Marshal(response)
-	fmt.Println(string(result))
 	if err != nil {
 		fmt.Println(err)
 	} else {
