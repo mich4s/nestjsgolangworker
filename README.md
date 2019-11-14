@@ -1,6 +1,6 @@
-#nestjsgolangworker
+# nestjsgolangworker
 
-#####This project allow to easily connect Golang worker with NestJS monolith application by Reddis microservice
+##### This project allow to easily connect Golang worker with NestJS monolith application by Reddis microservice
 
 I've made this package because i needed fast worker for some of compute-heavy tasks for my monolith app. Becase configuring redis every time is waste of time
 this library creates small abstraction for redis library and allow code to be executed "more reactive".
